@@ -1,0 +1,73 @@
+version: '3.7'
+
+services:
+  # REQUIRED: php runner
+  blog-php:
+    container_name: blog-php
+    build: .docker/php
+    working_dir: /var/www
+    command: php -S 0.0.0.0:8080 public/index.php
+    environment:
+      docker: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/var/www
+    links:
+      - blog-db:database
+      - blog-es:elasticsearch
+
+  # REQUIRED: main database
+  blog-db:
+    container_name: blog-db
+    image: mariadb:10.6.4
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret555
+      MYSQL_DATABASE: blog-api
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbpass
+    ports:
+      - "3308:3306"
+    volumes:
+      - blog-db:/var/lib/mysql
+
+  # OPTIONAL: logs storage
+  blog-es:
+    container_name: blog-es
+    image: elasticsearch:7.14.1
+    restart: always
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - blog-es:/usr/share/elasticsearch/data
+
+  # OPTIONAL: GUI for logs
+  blog-kibana:
+    container_name: blog-kibana
+    image: kibana:7.14.1
+    restart: always
+    ports:
+      - "5601:5601"
+    links:
+      - blog-es:elasticsearch
+
+  # OPTIONAL: GUI for database
+  blog-db-gui:
+    container_name: blog-db-gui
+    image: adminer
+    restart: always
+    ports:
+      - "8082:8080"
+    links:
+      - blog-db:db
+    environment:
+      - ADMINER_DESIGN=nette
+
+volumes:
+  blog-db:
+  blog-es:
+

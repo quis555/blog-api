@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+
+$container = require __DIR__ . '/../app/bootstrap.php';
+$commands = require __DIR__ . '/../app/commands.php';
+
+$app = new Application('BlogApi', '1.0');
+
+$commands($app, $container);
+
+try {
+    $app->run();
+} catch (Exception $e) {
+    echo 'Unknown exception: '. $e->getMessage() . PHP_EOL;
+    echo 'Class: '. get_class($e) . PHP_EOL;
+    echo 'In '. $e->getFile() .' at '. $e->getLine() . PHP_EOL;
+    exit(1);
+}

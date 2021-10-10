@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  title: Blog API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+tags:
+  - name: docs
+  - name: user
+  - name: other
+paths:
+  /api/doc.json:
+    get:
+      tags:
+        - docs
+      summary: OpenAPI JSON documentation
+      responses:
+        200:
+          description: Valid OpenAPI documentation in JSON format
+        500:
+          description: Unknown server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralErrorModel"
+  /api/doc.yaml:
+    get:
+      tags:
+        - docs
+      summary: OpenAPI YAML documentation
+      responses:
+        200:
+          description: Valid OpenAPI documentation in YAML format
+        500:
+          description: Unknown server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralErrorModel"
+  /api/user/register:
+    post:
+      tags:
+        - user
+      summary: Register new user
+      requestBody:
+        description: User object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  description: "User login, allowed characters: a-z, 0-9, _ and -"
+                  required: true
+                  minLength: 4
+                  uniqueItems: true
+                  example: myLogin555
+                email:
+                  type: string
+                  format: email
+                  description: User email address, need to be valid email
+                  required: true
+                  uniqueItems: true
+                  example: dawid.zaroda@gmail.com
+                password:
+                  type: string
+                  format: password
+                  description: User password used for login
+                  required: true
+                  minLength: 6
+                  example: mySecurePassword!@#
+                displayName:
+                  type: string
+                  description: User name which will be displayed in system, only alphabet and spaces are allowed
+                  required: true
+                  minLength: 4
+                  example: Dawid Zaroda
+      responses:
+        201:
+          description: User registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 123
+        400:
+          description: Invalid request data provided
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorModel"
+        409:
+          description: User with given e-mail or login already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConflictErrorModel"
+        500:
+          description: Unknown server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralErrorModel"
+components:
+  schemas:
+    ValidationErrorModel:
+      type: object
+      properties:
+        errors:
+          type: object
+          example:
+            login:
+              min: The login minimum is 4
+            email:
+              email: The email is not valid email
+    ConflictErrorModel:
+      type: object
+      properties:
+        errors:
+          type: object
+          example:
+            email:
+              unique: email dawid.zaroda@gmail.com has been used
+    GeneralErrorModel:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Unknown server error

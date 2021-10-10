@@ -1,0 +1,12 @@
+actor: ApiTester
+modules:
+  enabled:
+    - REST:
+        url: http://localhost:8080/api
+        depends: PhpBrowser
+    - Db:
+        dsn: 'mysql:host=database;dbname=blog-api'
+        user: dbuser
+        password: dbpass
+    - Asserts
+    - \Helper\Api

@@ -1,0 +1,6 @@
+main:
+  driver: pdo_mysql
+  host: database
+  user: dbuser
+  password: dbpass
+  dbname: blog-api

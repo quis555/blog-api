@@ -1,0 +1,18 @@
+### json documentation
+GET {{host}}/api/doc.json
+
+### yaml documentation
+GET {{host}}/api/doc.yml
+
+### register user
+POST {{host}}/api/user/register
+Content-Type: application/json
+
+{
+  "login": "quis",
+  "displayName": "Dawid Zaroda",
+  "password": "test555",
+  "email": "dawid.zaroda@gmail.com"
+}
+
+###

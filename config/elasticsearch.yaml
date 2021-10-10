@@ -1,0 +1,3 @@
+main:
+  hosts:
+    - elasticsearch:9200
