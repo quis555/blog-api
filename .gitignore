@@ -2,3 +2,4 @@ vendor
 doc/redoc-static.html
 tests/_output/*
 tests/_support/_generated/*
+doc/*.private.env.json
