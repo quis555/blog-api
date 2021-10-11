@@ -4,8 +4,9 @@ namespace App\Entity;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity
@@ -43,6 +44,14 @@ class User
      * @ORM\Column(type="datetime_immutable", name="last_login_at", nullable=true)
      */
     private ?DateTimeInterface $lastLoginAt = null;
+    /**
+     * @ORM\OneToMany(targetEntity="AccessToken", mappedBy="user")
+     */
+    private Collection $accessTokens;
+    /**
+     * @ORM\OneToMany(targetEntity="RefreshToken", mappedBy="user")
+     */
+    private Collection $refreshTokens;
 
     public static function create(string $login, string $email, string $displayName, string $hashedPassword): self
     {
@@ -54,6 +63,12 @@ class User
         $now = new DateTimeImmutable();
         $entity->registeredAt = $now;
         return $entity;
+    }
+
+    public function __construct()
+    {
+        $this->accessTokens = new ArrayCollection();
+        $this->refreshTokens = new ArrayCollection();
     }
 
     public function getId(): ?int
