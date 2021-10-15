@@ -46,7 +46,22 @@ class Api extends \Codeception\Module
             'password' => $this->grabServiceFromContainer(PasswordEncoderInterface::class)->encode($password),
             'registered_at' => $now->format('Y-m-d H:i:s'),
         ]);
-        return ['id' => $id, 'login' => $login, 'email' => $email, 'password' => $password];
+        return ['id' => $id, 'login' => $login, 'email' => $email, 'password' => $password, 'displayName' => $displayName];
+    }
+
+    public function haveAccessTokenInDatabase(
+        int $userId,
+        string $expiresAtModifier = '+5 minutes'
+    ) {
+        $token = $this->grabServiceFromContainer(TokenGeneratorInterface::class)->generate(20);
+        $now = new DateTime();
+        $id = $this->db->haveInDatabase('access_tokens', [
+            'token' => $token,
+            'user_id' => $userId,
+            'created_at' => $now->format('Y-m-d H:i:s'),
+            'expires_at' => $now->modify($expiresAtModifier)->format('Y-m-d H:i:s'),
+        ]);
+        return ['id' => $id, 'token' => $token];
     }
 
     public function haveRefreshTokenInDatabase(
