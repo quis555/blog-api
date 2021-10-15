@@ -41,3 +41,9 @@ Content-Type: application/json
 client.global.set("auth_token", response.body.accessToken.token);
 client.global.set("refresh_token", response.body.refreshToken.token);
 %}
+
+### get current user
+GET {{host}}/api/user
+Authorization: {{auth_token}}
+
+###
