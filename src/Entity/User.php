@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="users")
  */
 class User
@@ -76,6 +76,11 @@ class User
         return $this->id;
     }
 
+    public function getLogin(): string
+    {
+        return $this->login;
+    }
+
     public function getDisplayName(): string
     {
         return $this->displayName;
@@ -84,5 +89,20 @@ class User
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function getRegisteredAt(): DateTimeInterface
+    {
+        return $this->registeredAt;
+    }
+
+    public function getLastLoginAt(): ?DateTimeInterface
+    {
+        return $this->lastLoginAt;
     }
 }

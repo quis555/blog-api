@@ -3,6 +3,7 @@
 use App\Controller\DocController;
 use App\Controller\NotFoundController;
 use App\Controller\UserController;
+use App\Middleware\AuthorizationMiddleware;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
@@ -15,11 +16,12 @@ return function (App $app) {
         $group->get('/doc.yml', DocController::class . '::yaml');
 
         $group->post('/user/register', UserController::class . '::register');
-//        $group->post('/user/login', [UserController::class, 'login']);
+        $group->post('/user/login', UserController::class . '::login');
+        $group->post('/user/login/refresh', UserController::class . '::loginWithRefreshToken');
 
-//        $group->group('', function (Group $group) {
-//            $group->get('/user', [UserController::class, 'get']);
-//        })->add(AuthorizationMiddleware::class);
+        $group->group('', function (Group $group) {
+            $group->get('/user', UserController::class . '::get');
+        })->add(AuthorizationMiddleware::class);
     });
     $app->any('/[{path:.*}]', NotFoundController::class . '::notFound');
 };
