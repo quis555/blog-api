@@ -70,6 +70,8 @@ class UserLoginWithRefreshTokenCest
         $I->seeInDatabase('access_tokens', ['user_id' => $user['id'], 'token' => $accessToken]);
         $I->seeInDatabase('refresh_tokens', ['user_id' => $user['id'], 'token' => $refreshToken]);
         $I->seeInDatabase('refresh_tokens', ['id' => $token['id'], 'used' => 1]);
+        $lastLoginAt = $I->grabFromDatabase('users', 'last_login_at', ['id' => $user['id']]);
+        $I->assertNotEmpty($lastLoginAt);
     }
 
     private function exampleRequest(): array
