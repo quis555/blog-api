@@ -15,4 +15,29 @@ Content-Type: application/json
   "email": "dawid.zaroda@gmail.com"
 }
 
-###
+### login user (default)
+POST {{host}}/api/user/login
+Content-Type: application/json
+
+{
+  "login": "dawid.zaroda@gmail.com",
+  "password": "test555"
+}
+
+> {%
+client.global.set("auth_token", response.body.accessToken.token);
+client.global.set("refresh_token", response.body.refreshToken.token);
+%}
+
+### login user (with refresh token)
+POST {{host}}/api/user/login/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refresh_token}}"
+}
+
+> {%
+client.global.set("auth_token", response.body.accessToken.token);
+client.global.set("refresh_token", response.body.refreshToken.token);
+%}
