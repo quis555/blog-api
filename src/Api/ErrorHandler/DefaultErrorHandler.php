@@ -29,8 +29,9 @@ class DefaultErrorHandler implements ErrorHandlerInterface
         $statusCode = $this->determineStatusCode($request->getMethod(), $exception);
 
         $responseBody = [
-            'message' => 'Unknown server error'
+            'message' => $exception instanceof HttpException ? $exception->getMessage() : 'Unknown server error'
         ];
+
         if ($displayErrorDetails || $logErrorDetails) {
             $exceptionContext = $this->createExceptionContext($exception);
         }
