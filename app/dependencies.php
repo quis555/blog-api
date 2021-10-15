@@ -2,6 +2,9 @@
 
 use App\Security\PasswordEncoder;
 use App\Security\PasswordEncoderInterface;
+use App\Security\SecurityConfig;
+use App\Security\TokenGenerator;
+use App\Security\TokenGeneratorInterface;
 use App\Validation\Rule\UniqueRule;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Connection;
@@ -33,6 +36,17 @@ return function (ContainerBuilder $containerBuilder) {
         'config.logger.main' => function () {
             $config = Yaml::parseFile(__DIR__ . '/../config/logger.yaml');
             return $config['main'];
+        },
+        'config.security.main' => function () {
+            $config = Yaml::parseFile(__DIR__ . '/../config/security.yaml');
+            return $config['main'];
+        },
+        SecurityConfig::class => function (ContainerInterface $container) {
+            $config = $container->get('config.security.main');
+            return new SecurityConfig($config['access_token_lifetime'], $config['refresh_token_lifetime']);
+        },
+        TokenGeneratorInterface::class => function () {
+            return new TokenGenerator();
         },
         Client::class => function (ContainerInterface $container) {
             $config = $container->get('config.es.main');

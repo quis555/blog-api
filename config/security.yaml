@@ -1,0 +1,3 @@
+main:
+  access_token_lifetime: 1800 # 30 min
+  refresh_token_lifetime: 1209600 # 14 days
