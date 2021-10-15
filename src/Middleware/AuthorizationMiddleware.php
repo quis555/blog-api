@@ -27,15 +27,15 @@ class AuthorizationMiddleware
     {
         $authHeader = $request->getHeader('Authorization');
         if (empty($authHeader[0])) {
-            throw new HttpUnauthorizedException($request, 'Authorization header not set.');
+            throw new HttpUnauthorizedException($request, 'Authorization token is empty');
         }
         $accessToken = $this->accessTokenRepository->findByToken($authHeader[0]);
         if (!$accessToken) {
-            throw new HttpUnauthorizedException($request, 'Authorization token is invalid.');
+            throw new HttpUnauthorizedException($request, 'Authorization token not found');
         }
         $now = new DateTimeImmutable();
         if ($accessToken->getExpiresAt() < $now) {
-            throw new HttpUnauthorizedException($request, 'Authorization token expired.');
+            throw new HttpUnauthorizedException($request, 'Authorization token expired');
         }
         return $handler->handle($request->withAttribute('user', $accessToken->getUser()));
     }
