@@ -6,6 +6,7 @@ namespace Helper;
 // all public methods declared in helper class will be available in $I
 
 use App\Security\PasswordEncoderInterface;
+use App\Security\TokenGeneratorInterface;
 use Codeception\Module\Db;
 use DateTime;
 use Psr\Container\ContainerInterface;
@@ -46,5 +47,22 @@ class Api extends \Codeception\Module
             'registered_at' => $now->format('Y-m-d H:i:s'),
         ]);
         return ['id' => $id, 'login' => $login, 'email' => $email, 'password' => $password];
+    }
+
+    public function haveRefreshTokenInDatabase(
+        int $userId,
+        string $expiresAtModifier = '+5 minutes',
+        bool $used = false
+    ): array {
+        $token = $this->grabServiceFromContainer(TokenGeneratorInterface::class)->generate(20);
+        $now = new DateTime();
+        $id = $this->db->haveInDatabase('refresh_tokens', [
+            'token' => $token,
+            'user_id' => $userId,
+            'created_at' => $now->format('Y-m-d H:i:s'),
+            'expires_at' => $now->modify($expiresAtModifier)->format('Y-m-d H:i:s'),
+            'used' => (int)$used
+        ]);
+        return ['id' => $id, 'token' => $token];
     }
 }
