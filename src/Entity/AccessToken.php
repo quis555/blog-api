@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\AccessTokenRepository")
  * @ORM\Table(name="access_tokens")
  */
 class AccessToken
@@ -31,12 +32,12 @@ class AccessToken
     /**
      * @ORM\Column(type="datetime_immutable", name="created_at")
      */
-    private string $createdAt;
+    private DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="datetime_immutable", name="expires_at")
      */
-    private string $expiresAt;
+    private DateTimeInterface $expiresAt;
 
     /**
      * @param User $user
@@ -53,5 +54,25 @@ class AccessToken
         $entity->createdAt = $now;
         $entity->expiresAt = $now->modify('+' . $expiresIn . ' seconds');
         return $entity;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    public function getExpiresAt(): DateTimeInterface
+    {
+        return $this->expiresAt;
     }
 }

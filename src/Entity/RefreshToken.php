@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\RefreshTokenRepository")
  * @ORM\Table(name="refresh_tokens")
  */
 class RefreshToken
@@ -31,12 +32,17 @@ class RefreshToken
     /**
      * @ORM\Column(type="datetime_immutable", name="created_at")
      */
-    private string $createdAt;
+    private DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="datetime_immutable", name="expires_at")
      */
-    private string $expiresAt;
+    private DateTimeInterface $expiresAt;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $used = false;
 
     /**
      * @param User $user
@@ -53,5 +59,35 @@ class RefreshToken
         $entity->createdAt = $now;
         $entity->expiresAt = $now->modify('+' . $expiresIn . ' seconds');
         return $entity;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    public function getExpiresAt(): DateTimeInterface
+    {
+        return $this->expiresAt;
+    }
+
+    public function isUsed(): bool
+    {
+        return $this->used;
+    }
+
+    public function markTokenAsUsed(): void
+    {
+        $this->used = true;
     }
 }

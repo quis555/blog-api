@@ -23,6 +23,10 @@ if (!DEV_MODE) {
 $dependencies = require __DIR__ . '/dependencies.php';
 $dependencies($containerBuilder);
 
+// prepare doctrine repositories
+$repositories = require __DIR__ . '/repositories.php';
+$repositories($containerBuilder);
+
 // build php-di container instance
 /** @noinspection PhpUnhandledExceptionInspection */
 return $containerBuilder->build();
