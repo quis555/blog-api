@@ -71,6 +71,12 @@ class User
         $this->refreshTokens = new ArrayCollection();
     }
 
+    public function setLastLoginAtToNow(): static
+    {
+        $this->lastLoginAt = new DateTimeImmutable();
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

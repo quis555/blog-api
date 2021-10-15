@@ -19,6 +19,7 @@ class UserLoginAction
 
     public function execute(User $user): UserLoginResult
     {
+        $user->setLastLoginAtToNow();
         $accessToken = $this->tokenEntityBuilder->createAccessToken($user);
         $this->entityManager->persist($accessToken);
         $refreshToken = $this->tokenEntityBuilder->createRefreshToken($user);
