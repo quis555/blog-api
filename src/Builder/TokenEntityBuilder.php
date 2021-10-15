@@ -20,7 +20,7 @@ class TokenEntityBuilder
     {
         return AccessToken::create(
             $user,
-            $this->tokenGenerator->generateToken(32),
+            $this->tokenGenerator->generate(32),
             $this->securityConfig->getAccessTokenLifetime()
         );
     }
@@ -29,7 +29,7 @@ class TokenEntityBuilder
     {
         return RefreshToken::create(
             $user,
-            $this->tokenGenerator->generateToken(64),
+            $this->tokenGenerator->generate(64),
             $this->securityConfig->getRefreshTokenLifetime()
         );
     }
