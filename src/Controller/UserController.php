@@ -35,7 +35,7 @@ class UserController
         PasswordEncoderInterface $encoder
     ): ResponseInterface {
         $this->logger->info('User register request');
-        $validation = $validator->validate($request->getParsedBody(), [
+        $validation = $validator->validate($request->getParsedBody() ?? [], [
             'login' => 'required|min:4|alpha_dash|unique:users,login',
             'email' => 'required|email|unique:users,email',
             'displayName' => 'required|min:4|alpha_spaces',
@@ -72,7 +72,7 @@ class UserController
         UserLoginAction $userLoginAction,
     ): ResponseInterface {
         $this->logger->info('User login (default) request');
-        $requestBody = $request->getParsedBody();
+        $requestBody = $request->getParsedBody() ?? [];
         $loginIsEmail = filter_var($requestBody['login'] ?? null, FILTER_VALIDATE_EMAIL);
 
         $validation = $validator->validate($requestBody, [
@@ -102,7 +102,7 @@ class UserController
         UserLoginAction $userLoginAction,
     ): ResponseInterface {
         $this->logger->info('User login (with refresh token) request');
-        $validation = $validator->validate($request->getParsedBody(), [
+        $validation = $validator->validate($request->getParsedBody() ?? [], [
             'refreshToken' => 'required|min:20|alpha_num',
         ]);
         if ($validation->fails()) {
